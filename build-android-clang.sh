@@ -2,7 +2,8 @@
 
 #set -v
 
-# export OPENSSL_VERSION="openssl-1.0.2o"
+export ANDROID_NDK_HOME=~/Android/android-ndk-r19
+export OPENSSL_VERSION="openssl-1.0.2q"
 curl -O "https://www.openssl.org/source/${OPENSSL_VERSION}.tar.gz"
 tar xfz "${OPENSSL_VERSION}.tar.gz"
 
@@ -53,7 +54,7 @@ build_android_clang() {
 
 	# Build openssl libraries
 	perl -pi -w -e 's/\-mandroid//g;' ./Configure
-	./Configure $CONFIGURE_PLATFORM shared threads no-asm no-sse2
+	./Configure $CONFIGURE_PLATFORM shared threads no-asm no-sse2 no-ssl2 no-ssl3 no-comp no-hw no-engine
 
     # patch SONAME
     perl -pi -e 's/SHLIB_EXT=\.so\.\$\(SHLIB_MAJOR\)\.\$\(SHLIB_MINOR\)/SHLIB_EXT=\.so/g' Makefile
@@ -78,7 +79,7 @@ build_android_clang() {
 # Build libcrypto for armeabi-v7a, x86 and arm64-v8a.
 build_android_clang "armeabi-v7a" "arm"   "android-16" "arm-linux-androideabi" "android-armv7"
 build_android_clang "x86"         "x86"   "android-16" "i686-linux-android"    "android-x86"
-build_android_clang "arm64-v8a"   "arm64" "android-21" "aarch64-linux-android" "linux-generic64 -DB_ENDIAN"
+build_android_clang "arm64-v8a"   "arm64" "android-21" "aarch64-linux-android" "android"
 
 export PATH=$PATH_ORG
 
